@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AM Premium Activator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      background: #0b0d15;
+      background-image: radial-gradient(ellipse at 20% 50%, rgba(255, 92, 0, 0.06) 0%, transparent 60%),
+                        radial-gradient(ellipse at 80% 50%, rgba(124, 58, 237, 0.06) 0%, transparent 60%);
+      font-family: 'Inter', sans-serif;
+      color: #eef2f8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 460px;
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 32px;
+      padding: 36px 28px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 68px;
+      height: 68px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, #ff5c00, #7c3aed);
+      margin-bottom: 14px;
+      box-shadow: 0 10px 40px rgba(255, 92, 0, 0.25);
+    }
+    .logo svg {
+      width: 34px;
+      height: 34px;
+    }
+    .header h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 26px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ff8040, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .header p {
+      color: #9aa2b9;
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    .stepper {
+      display: flex;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+    .step-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+    }
+    .step-num {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      color: #6b7280;
+      background: transparent;
+      transition: 0.3s;
+    }
+    .step-num.active {
+      border-color: #ff5c00;
+      color: #ff5c00;
+      background: rgba(255, 92, 0, 0.12);
+      box-shadow: 0 0 20px rgba(255, 92, 0, 0.15);
+    }
+    .step-num.done {
+      border-color: #00e68a;
+      color: #00e68a;
+      background: rgba(0, 230, 138, 0.08);
+    }
+    .step-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: 0.3s;
+    }
+    .step-label.active {
+      color: #eef2f8;
+    }
+    .step-divider {
+      flex: 1;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.06);
+      margin: 0 6px;
+      max-width: 28px;
+    }
+
+    .step-panel {
+      display: none;
+      flex-direction: column;
+      gap: 20px;
+      animation: fadeUp 0.35s ease both;
+    }
+    .step-panel.active {
+      display: flex;
+    }
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .field label {
+      font-size: 12px;
+      font-weight: 500;
+      color: #9aa2b9;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .input-wrap {
+      position: relative;
+    }
+    .input-wrap .ico {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #6b7280;
+      display: flex;
+      pointer-events: none;
+    }
+    .input-wrap .ico svg {
+      width: 18px;
+      height: 18px;
+    }
+    input[type="email"],
+    textarea {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1.5px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      color: #eef2f8;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      padding: 14px 16px 14px 46px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+      padding-top: 14px;
+      line-height: 1.6;
+    }
+    input[type="email"]:focus,
+    textarea:focus {
+      border-color: rgba(255, 92, 0, 0.4);
+      box-shadow: 0 0 0 4px rgba(255, 92, 0, 0.06);
+    }
+    input[type="email"]::placeholder,
+    textarea::placeholder {
+      color: #6b7280;
+      opacity: 0.6;
+    }
+
+    .info-box {
+      background: rgba(255, 92, 0, 0.05);
+      border: 1px solid rgba(255, 92, 0, 0.1);
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 13px;
+      color: #ffaa80;
+      line-height: 1.6;
+    }
+    .info-box strong {
+      color: #ff8040;
+    }
+    .info-box.purple {
+      background: rgba(124, 58, 237, 0.05);
+      border-color: rgba(124, 58, 237, 0.15);
+      color: #c4b5fd;
+    }
+    .info-box.purple strong {
+      color: #a78bfa;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 14px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn:active {
+      transform: scale(0.97);
+    }
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #ff5c00, #7c3aed);
+      color: #fff;
+      box-shadow: 0 8px 30px rgba(255, 92, 0, 0.3);
+    }
+    .btn-primary:hover:not(:disabled) {
+      box-shadow: 0 8px 40px rgba(255, 92, 0, 0.45);
+      transform: translateY(-2px);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: #9aa2b9;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 14px;
+      padding: 12px;
+    }
+    .btn-ghost:hover {
+      color: #eef2f8;
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 2.5px solid rgba(255, 255, 255, 0.2);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .result {
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 13.5px;
+      line-height: 1.6;
+      display: none;
+    }
+    .result.show {
+      display: block;
+      animation: fadeUp 0.3s ease;
+    }
+    .result.success {
+      background: rgba(0, 230, 138, 0.08);
+      border: 1px solid rgba(0, 230, 138, 0.2);
+      color: #4dffc3;
+    }
+    .result.error {
+      background: rgba(255, 71, 87, 0.08);
+      border: 1px solid rgba(255, 71, 87, 0.2);
+      color: #ff8090;
+    }
+
+    .final-success {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 12px;
+      padding: 16px 0;
+      animation: fadeUp 0.5s ease;
+    }
+    .final-success.show {
+      display: flex;
+    }
+    .check-circle {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: rgba(0, 230, 138, 0.08);
+      border: 2px solid rgba(0, 230, 138, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 40px rgba(0, 230, 138, 0.1);
+    }
+    .check-circle svg {
+      width: 34px;
+      height: 34px;
+      color: #00e68a;
+    }
+    .final-success h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #00e68a, #4dffc3);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .final-success p {
+      color: #9aa2b9;
+      font-size: 14px;
+      line-height: 1.6;
+      max-width: 300px;
+    }
+
+    .footer {
+      margin-top: 24px;
+      text-align: center;
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .cooldown-badge {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 0 10px;
+      border-radius: 6px;
+      font-weight: 600;
+      margin-left: 4px;
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 24px 18px;
+      }
+      .header h1 {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="header">
+      <div class="logo">
+        <svg viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6 26L12 8L17 20L22 8L28 26" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+          <circle cx="17" cy="17" r="2" fill="white" opacity="0.6" />
+        </svg>
+      </div>
+      <h1>AM Premium Activator</h1>
+      <p>Aktifkan akun Alight Motion dalam 2 langkah</p>
+    </div>
+
+    <div class="stepper">
+      <div class="step-item">
+        <div class="step-num active" id="stepNum1">1</div>
+        <span class="step-label active" id="stepLbl1">Kirim Link</span>
+      </div>
+      <div class="step-divider"></div>
+      <div class="step-item">
+        <div class="step-num" id="stepNum2">2</div>
+        <span class="step-label" id="stepLbl2">Verifikasi</span>
+      </div>
+    </div>
+
+    <!-- Step 1 -->
+    <div class="step-panel active" id="panel1">
+      <div class="field">
+        <label>Email Akun Alight Motion</label>
+        <div class="input-wrap">
+          <span class="ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="4" width="20" height="16" rx="2" />
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+            </svg>
+          </span>
+          <input type="email" id="emailInput" placeholder="contoh@gmail.com" autocomplete="email" />
+        </div>
+      </div>
+
+      <div class="info-box">
+        Sistem akan mengirim <strong>magic link</strong> ke email kamu. Buka email tersebut dan salin link-nya untuk langkah berikutnya.
+      </div>
+
+      <div class="result" id="result1"></div>
+
+      <button class="btn btn-primary" id="btnSend">Kirim Magic Link</button>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="step-panel" id="panel2">
+      <div class="field">
+        <label>Link dari Email</label>
+        <div class="input-wrap" style="align-items:flex-start;">
+          <span class="ico" style="top:14px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+            </svg>
+          </span>
+          <textarea id="linkInput" placeholder="Tempel link dari email di sini...&#10;(https://alight-creative.firebaseapp.com/...)"></textarea>
+        </div>
+      </div>
+
+      <div class="info-box purple">
+        Buka email dari <strong>Alight Motion</strong>, salin seluruh link yang ada, lalu tempel di atas dan klik Aktifkan.
+      </div>
+
+      <div class="result" id="result2"></div>
+
+      <div class="final-success" id="finalSuccess">
+        <div class="check-circle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        </div>
+        <h3>Premium Aktif! 🎉</h3>
+        <p>Akun Alight Motion kamu berhasil diaktifkan. Selamat menikmati semua fitur premium!</p>
+      </div>
+
+      <button class="btn btn-primary" id="btnVerify">Aktifkan Premium</button>
+      <button class="btn btn-ghost" id="btnBack">← Kembali ke langkah 1</button>
+    </div>
+
+    <div class="footer">
+      <span>Powered by AlwaysCodex API · Untuk penggunaan pribadi saja</span>
+    </div>
+  </div>
+
+  <script>
+    // ─── Konfigurasi ───────────────────────────────────────────────
+    const PROXY = 'https://corsproxy.io/?url=';
+    const BASE = PROXY + 'https://api.alwayscodex.my.id/api/am';
+    const API_KEY = 'amfree'; // API key yang diberikan (tidak ditampilkan di UI)
+    const COOLDOWN_SECONDS = 30;
+
+    // ─── State ─────────────────────────────────────────────────────
+    let currentEmail = '';
+    let cooldownTimer = null;
+
+    // ─── DOM refs ──────────────────────────────────────────────────
+    const emailInput = document.getElementById('emailInput');
+    const linkInput = document.getElementById('linkInput');
+    const result1 = document.getElementById('result1');
+    const result2 = document.getElementById('result2');
+    const btnSend = document.getElementById('btnSend');
+    const btnVerify = document.getElementById('btnVerify');
+    const btnBack = document.getElementById('btnBack');
+    const panel1 = document.getElementById('panel1');
+    const panel2 = document.getElementById('panel2');
+    const stepNum1 = document.getElementById('stepNum1');
+    const stepNum2 = document.getElementById('stepNum2');
+    const stepLbl1 = document.getElementById('stepLbl1');
+    const stepLbl2 = document.getElementById('stepLbl2');
+    const finalSuccess = document.getElementById('finalSuccess');
+
+    // ─── Helper functions ──────────────────────────────────────────
+    function setResult(el, type, msg) {
+      el.className = `result ${type} show`;
+      el.innerHTML = msg;
+    }
+
+    function clearResult(el) {
+      el.className = 'result';
+      el.innerHTML = '';
+    }
+
+    function setLoading(btn, loading, label) {
+      if (loading) {
+        btn.disabled = true;
+        btn.innerHTML = `<span class="spinner"></span>${label}`;
+      } else {
+        btn.disabled = false;
+        btn.innerHTML = label;
+      }
+    }
+
+    function stopCooldown() {
+      if (cooldownTimer) {
+        clearInterval(cooldownTimer);
+        cooldownTimer = null;
+        btnSend.disabled = false;
+        btnSend.innerHTML = 'Kirim Magic Link';
+      }
+    }
+
+    function startCooldown() {
+      stopCooldown();
+      btnSend.disabled = true;
+      let remaining = COOLDOWN_SECONDS;
+      btnSend.innerHTML = `Tunggu <span class="cooldown-badge">${remaining}s</span>`;
+
+      cooldownTimer = setInterval(() => {
+        remaining--;
+        if (remaining <= 0) {
+          clearInterval(cooldownTimer);
+          cooldownTimer = null;
+          btnSend.disabled = false;
+          btnSend.innerHTML = 'Kirim Magic Link';
+        } else {
+          btnSend.innerHTML = `Tunggu <span class="cooldown-badge">${remaining}s</span>`;
+        }
+      }, 1000);
+    }
+
+    // ─── Step navigation ───────────────────────────────────────────
+    function goToStep2() {
+      stepNum1.className = 'step-num done';
+      stepNum1.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+      stepLbl1.className = 'step-label';
+      stepNum2.className = 'step-num active';
+      stepLbl2.className = 'step-label active';
+
+      panel1.classList.remove('active');
+      panel2.classList.add('active');
+    }
+
+    function goToStep1() {
+      stopCooldown();
+
+      stepNum1.className = 'step-num active';
+      stepNum1.innerHTML = '1';
+      stepLbl1.className = 'step-label active';
+      stepNum2.className = 'step-num';
+      stepLbl2.className = 'step-label';
+
+      panel2.classList.remove('active');
+      panel1.classList.add('active');
+
+      finalSuccess.classList.remove('show');
+      btnVerify.style.display = '';
+      btnVerify.innerHTML = 'Aktifkan Premium';
+      clearResult(result2);
+    }
+
+    // ─── API call dengan fallback ──────────────────────────────────
+    async function apiRequest(endpoint, body) {
+      // Coba endpoint v2 terlebih dahulu
+      try {
+        const res = await fetch(`${BASE}/${endpoint}v2`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': API_KEY
+          },
+          body: JSON.stringify(body)
+        });
+        const data = await res.json().catch(() => ({}));
+        if (res.ok) return { ok: true, data };
+        // Jika error premium, coba tanpa v2
+        if (data.message && data.message.includes('premium API key')) {
+          const res2 = await fetch(`${BASE}/${endpoint}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'apikey': API_KEY
+            },
+            body: JSON.stringify(body)
+          });
+          const data2 = await res2.json().catch(() => ({}));
+          if (res2.ok) return { ok: true, data: data2 };
+          return { ok: false, message: data2.message || data2.error || `Error ${res2.status}` };
+        }
+        return { ok: false, message: data.message || data.error || `Error ${res.status}` };
+      } catch (err) {
+        return { ok: false, message: err.message };
+      }
+    }
+
+    // ─── Send email ──────────────────────────────────────────────
+    async function sendEmail() {
+      const email = emailInput.value.trim();
+      clearResult(result1);
+
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        setResult(result1, 'error', '⚠ Masukkan alamat email yang valid.');
+        return;
+      }
+
+      currentEmail = email;
+      setLoading(btnSend, true, 'Mengirim...');
+
+      const result = await apiRequest('send', { email });
+
+      if (result.ok) {
+        setResult(result1, 'success',
+          `✅ Link berhasil dikirim ke <strong>${email}</strong>. Cek inbox (atau folder spam) kamu.`);
+        startCooldown();
+        setTimeout(() => goToStep2(), 1200);
+      } else {
+        setResult(result1, 'error', `✗ Gagal mengirim: ${result.message}`);
+        setLoading(btnSend, false, 'Kirim Magic Link');
+      }
+    }
+
+    // ─── Verify link ──────────────────────────────────────────────
+    async function verifyLink() {
+      const link = linkInput.value.trim();
+      clearResult(result2);
+
+      if (!link) {
+        setResult(result2, 'error', '⚠ Tempel link dari email terlebih dahulu.');
+        return;
+      }
+      if (!link.startsWith('http')) {
+        setResult(result2, 'error', '⚠ Link tidak valid. Pastikan kamu menyalin link lengkap dari email.');
+        return;
+      }
+
+      setLoading(btnVerify, true, 'Mengaktifkan...');
+
+      const result = await apiRequest('verify', { email: currentEmail, link });
+
+      if (result.ok) {
+        btnVerify.style.display = 'none';
+        finalSuccess.classList.add('show');
+        clearResult(result2);
+      } else {
+        setResult(result2, 'error', `✗ Verifikasi gagal: ${result.message}`);
+        setLoading(btnVerify, false, 'Aktifkan Premium');
+      }
+    }
+
+    // ─── Event listeners ──────────────────────────────────────────
+    btnSend.addEventListener('click', sendEmail);
+    btnVerify.addEventListener('click', verifyLink);
+    btnBack.addEventListener('click', goToStep1);
+
+    emailInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') sendEmail();
+    });
+  </script>
+</body>
+</html>
