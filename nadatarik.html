@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NadaTarik — Spotify Downloader</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #060610;
+      --surf:      rgba(14, 14, 28, 0.82);
+      --card:      rgba(18, 18, 32, 0.9);
+      --b0:        rgba(255,255,255,0.055);
+      --b1:        rgba(255,255,255,0.12);
+      --mint:      #1EE7A3;
+      --mint-d:    #13C088;
+      --mint-glow: rgba(30,231,163,0.18);
+      --white:     #F0F0FA;
+      --dim:       #48486A;
+      --err:       #F87171;
+    }
+
+    html, body { height: 100%; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--white);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden;
+    }
+
+    /* ─────────────────────────────────────────
+       SIGNATURE: Immersive album-art background
+       ───────────────────────────────────────── */
+    #art-bg {
+      position: fixed;
+      inset: -60px;
+      background-size: cover;
+      background-position: center;
+      filter: blur(72px) brightness(0.22) saturate(2.2);
+      opacity: 0;
+      transition: opacity 1.8s ease;
+      z-index: 0;
+      pointer-events: none;
+    }
+    #art-bg.show { opacity: 1; }
+
+    /* Vignette overlay */
+    .vignette {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, transparent 0%, rgba(6,6,16,0.65) 100%),
+        linear-gradient(to bottom, rgba(6,6,16,0.45) 0%, rgba(6,6,16,0.92) 100%);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: relative;
+      z-index: 20;
+      width: 100%;
+      max-width: 1100px;
+      padding: 22px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: -0.025em;
+    }
+    .logo span { color: var(--mint); }
+
+    .nav-tag {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--mint);
+      border: 1px solid rgba(30,231,163,0.22);
+      background: rgba(30,231,163,0.06);
+      padding: 4px 11px;
+      border-radius: 100px;
+    }
+
+    /* ── MAIN ── */
+    main {
+      position: relative;
+      z-index: 10;
+      flex: 1;
+      width: 100%;
+      max-width: 560px;
+      padding: 52px 20px 88px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ── HERO ── */
+    .kicker {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 20px;
+    }
+    .kicker-pip {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--mint);
+      box-shadow: 0 0 8px var(--mint);
+      animation: breathe 2.4s ease-in-out infinite;
+    }
+    @keyframes breathe {
+      0%,100% { opacity:1; transform:scale(1); box-shadow: 0 0 8px var(--mint); }
+      50%      { opacity:0.5; transform:scale(0.65); box-shadow: 0 0 3px var(--mint); }
+    }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(34px, 8.5vw, 58px);
+      line-height: 0.93;
+      letter-spacing: -0.04em;
+      text-align: center;
+      margin-bottom: 18px;
+    }
+    .h1-accent {
+      display: block;
+      color: var(--mint);
+    }
+
+    .sub {
+      text-align: center;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--dim);
+      line-height: 1.7;
+      margin-bottom: 50px;
+      max-width: 340px;
+    }
+
+    /* ── INPUT CARD ── */
+    .icard {
+      width: 100%;
+      background: var(--surf);
+      border: 1px solid var(--b1);
+      border-radius: 18px;
+      padding: 14px;
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .icard:focus-within {
+      border-color: rgba(30,231,163,0.38);
+      box-shadow: 0 0 0 3px var(--mint-glow), 0 24px 64px rgba(0,0,0,0.55);
+    }
+    .irow {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .iico {
+      flex-shrink: 0;
+      width: 34px; height: 34px;
+      border-radius: 8px;
+      background: rgba(30,231,163,0.08);
+      border: 1px solid rgba(30,231,163,0.14);
+      display: flex; align-items: center; justify-content: center;
+    }
+    input[type=text] {
+      flex: 1; min-width: 0;
+      background: none; border: none; outline: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13.5px;
+      color: var(--white);
+      caret-color: var(--mint);
+    }
+    input::placeholder { color: var(--dim); font-size: 13px; }
+    .ibtn {
+      flex-shrink: 0;
+      height: 34px;
+      padding: 0 16px;
+      background: var(--mint);
+      color: #040410;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 12.5px;
+      cursor: pointer;
+      display: flex; align-items: center; gap: 6px;
+      white-space: nowrap;
+      transition: background 0.18s, transform 0.1s, opacity 0.2s;
+    }
+    .ibtn:hover:not(:disabled) { background: #25EFB0; }
+    .ibtn:active:not(:disabled) { transform: scale(0.95); }
+    .ibtn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    .ihint {
+      margin-top: 9px;
+      font-size: 11px;
+      color: var(--dim);
+      padding-left: 1px;
+    }
+    .ihint button {
+      background: none; border: none;
+      color: var(--mint); cursor: pointer;
+      font-family: inherit; font-size: 11px; padding: 0;
+    }
+    .ihint button:hover { text-decoration: underline; }
+
+    /* ── LOADER ── */
+    #loader {
+      display: none;
+      align-items: center;
+      gap: 11px;
+      padding: 32px 0 0;
+      font-size: 12.5px;
+      color: var(--dim);
+    }
+    #loader.on { display: flex; }
+    .ring {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      border: 2px solid rgba(30,231,163,0.15);
+      border-top-color: var(--mint);
+      animation: spin 0.72s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── ERROR ── */
+    #err {
+      display: none;
+      margin-top: 14px;
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: 12px;
+      background: rgba(248,113,113,.07);
+      border: 1px solid rgba(248,113,113,.18);
+      font-size: 13px;
+      color: var(--err);
+      gap: 8px;
+      align-items: flex-start;
+    }
+    #err.on { display: flex; }
+
+    /* ── RESULT CARD ── */
+    #res {
+      display: none;
+      width: 100%;
+      margin-top: 22px;
+      animation: slideUp 0.42s cubic-bezier(0.22,1,0.36,1) both;
+    }
+    #res.on { display: block; }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    .rcard {
+      background: var(--card);
+      border: 1px solid var(--b1);
+      border-radius: 18px;
+      overflow: hidden;
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+    }
+
+    .rhead {
+      display: flex;
+      gap: 14px;
+      padding: 16px;
+      align-items: center;
+      border-bottom: 1px solid var(--b0);
+    }
+
+    /* Album art in result */
+    .rthumb {
+      flex-shrink: 0;
+      width: 72px; height: 72px;
+      border-radius: 10px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.04);
+      display: flex; align-items: center; justify-content: center;
+      border: 1px solid var(--b0);
+    }
+    .rthumb img {
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+    }
+
+    .rmeta { flex: 1; min-width: 0; }
+    .rtitle {
+      font-family: 'Syne', sans-serif;
+      font-size: 16px; font-weight: 700;
+      letter-spacing: -0.02em;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      margin-bottom: 3px;
+    }
+    .rartist {
+      font-size: 12px; color: var(--dim);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      margin-bottom: 10px;
+    }
+    .rtags { display: flex; gap: 5px; }
+    .rtag {
+      font-size: 10.5px; font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 100px;
+      background: rgba(255,255,255,0.05);
+      color: var(--dim);
+    }
+    .rtag.ok {
+      background: rgba(30,231,163,0.1);
+      color: var(--mint);
+      border: 1px solid rgba(30,231,163,0.18);
+    }
+
+    .rfoot { padding: 12px 16px 16px; }
+
+    .btnDl {
+      display: flex;
+      align-items: center; justify-content: center;
+      gap: 9px;
+      width: 100%;
+      padding: 13px;
+      border-radius: 12px;
+      background: var(--mint);
+      color: #030310;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 14.5px;
+      letter-spacing: -0.01em;
+      text-decoration: none;
+      border: none; cursor: pointer;
+      transition: opacity 0.18s, transform 0.1s;
+    }
+    .btnDl:hover { opacity: 0.87; }
+    .btnDl:active { transform: scale(0.98); }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      border-top: 1px solid var(--b0);
+      padding: 16px;
+      text-align: center;
+      font-size: 11.5px;
+      color: var(--dim);
+    }
+    footer b { color: var(--mint); font-weight: 500; }
+
+    @media (max-width: 380px) {
+      .ibtn-lbl { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Signature: blurred album art fills the background -->
+  <div id="art-bg"></div>
+  <div class="vignette"></div>
+
+  <nav>
+    <div class="logo">Nada<span>Tarik</span></div>
+    <div class="nav-tag">Zigora Tools</div>
+  </nav>
+
+  <main>
+    <div class="kicker">
+      <div class="kicker-pip"></div>
+      Spotify Downloader
+      <div class="kicker-pip"></div>
+    </div>
+
+    <h1>
+      Tarik lagu
+      <span class="h1-accent">dari Spotify</span>
+    </h1>
+    <p class="sub">
+      Paste link track Spotify, langsung dapat file audio.<br>
+      Tanpa login. Tanpa akun.
+    </p>
+
+    <div class="icard">
+      <div class="irow">
+        <div class="iico">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9.5" stroke="#1EE7A3" stroke-width="1.5"/>
+            <path d="M7.5 15.5c2.8-1.4 6.2-1.4 9 0"  stroke="#1EE7A3" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M6.5 11.5c3.5-2 9-2 12 0"        stroke="#1EE7A3" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M7 8c3-1.3 8-1.3 11 0"            stroke="#1EE7A3" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <input
+          id="url" type="text"
+          placeholder="https://open.spotify.com/track/…"
+          autocomplete="off" spellcheck="false"
+        >
+        <button class="ibtn" id="btn" onclick="go()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="3"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          <span class="ibtn-lbl">Ambil</span>
+        </button>
+      </div>
+      <p class="ihint">
+        Contoh: <button onclick="ex()">open.spotify.com/track/3y8RcMPYG22fRnrOi4oFJ1</button>
+      </p>
+    </div>
+
+    <!-- Loader -->
+    <div id="loader">
+      <div class="ring"></div>
+      <span>Mengambil track…</span>
+    </div>
+
+    <!-- Error -->
+    <div id="err">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2" stroke-linecap="round"
+           style="flex-shrink:0;margin-top:1px">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <circle cx="12" cy="16" r=".5" fill="currentColor"/>
+      </svg>
+      <span id="emsg"></span>
+    </div>
+
+    <!-- Result -->
+    <div id="res">
+      <div class="rcard">
+        <div class="rhead">
+          <div class="rthumb" id="rthumb">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none"
+                 stroke="#303048" stroke-width="1.5">
+              <circle cx="12" cy="12" r="10"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </div>
+          <div class="rmeta">
+            <div class="rtitle"  id="rtitle">—</div>
+            <div class="rartist" id="rartist">—</div>
+            <div class="rtags">
+              <span class="rtag" id="rdur">—</span>
+              <span class="rtag">MP3</span>
+              <span class="rtag ok">✓ Siap</span>
+            </div>
+          </div>
+        </div>
+        <div class="rfoot">
+          <a id="rdl" href="#" target="_blank" rel="noopener" class="btnDl">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.8"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Download Track
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>Dibuat oleh <b>Zigora</b> · NadaTarik v1.0</footer>
+
+  <script>
+    const $ = id => document.getElementById(id);
+
+    /* ─── Example fill ─── */
+    function ex() {
+      $('url').value = 'https://open.spotify.com/track/3y8RcMPYG22fRnrOi4oFJ1';
+      $('url').focus();
+    }
+
+    /* ─── UI helpers ─── */
+    function setLoad(on)   { $('loader').className = on ? 'on' : ''; }
+    function setErr(msg)   { $('emsg').textContent = msg; $('err').className = msg ? 'on' : ''; }
+    function setRes(on)    { $('res').className = on ? 'on' : ''; }
+
+    /* ─── Signature: set blurred art background ─── */
+    function setArtBg(src) {
+      const el = $('art-bg');
+      if (src) {
+        el.style.backgroundImage = `url(${src})`;
+        el.className = 'show';
+      } else {
+        el.className = '';
+        setTimeout(() => { el.style.backgroundImage = ''; }, 2000);
+      }
+    }
+
+    /* ─── Render result ─── */
+    function render(raw) {
+      const d = raw.data || raw.result || raw.track || raw;
+
+      const title  = d.title  || d.name       || d.track_name  || 'Unknown Title';
+      const artist = d.artist || d.artists    || d.author      || d.singer       || '—';
+      const dur    = d.duration || d.length   || null;
+      const cover  = d.cover  || d.thumbnail  || d.image       || d.artwork      || d.albumCover || null;
+      const dl     = d.download || d.downloadUrl || d.url      || d.audio        || d.link || null;
+
+      $('rtitle').textContent  = title;
+      $('rartist').textContent = Array.isArray(artist) ? artist.join(', ') : artist;
+      $('rdur').textContent    = dur || 'Audio';
+
+      const thumb = $('rthumb');
+      if (cover) {
+        thumb.innerHTML = `<img src="${cover}" alt="cover"
+          onerror="this.parentNode.innerHTML='<svg width=26 height=26 viewBox=\\'0 0 24 24\\' fill=none stroke=\\'#303048\\' stroke-width=1.5><circle cx=12 cy=12 r=10/><circle cx=12 cy=12 r=3/></svg>'">`;
+        setArtBg(cover);
+      } else {
+        setArtBg(null);
+      }
+
+      const dlA = $('rdl');
+      dlA.href = dl || '#';
+      if (!dl) dlA.textContent = 'Link tidak tersedia';
+
+      setRes(true);
+    }
+
+    /* ─── Main fetch ─── */
+    async function go() {
+      const url = $('url').value.trim();
+      if (!url) { setErr('Masukkan URL Spotify terlebih dahulu.'); return; }
+      if (!url.includes('spotify.com')) {
+        setErr('URL tidak valid. Gunakan link open.spotify.com.');
+        return;
+      }
+
+      setErr('');
+      setRes(false);
+      setLoad(true);
+      $('btn').disabled = true;
+
+      try {
+        const res = await fetch('https://api.alwayscodex.my.id/api/downloader/spotify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url })
+        });
+
+        if (!res.ok) throw new Error(`Server error ${res.status}`);
+
+        const json = await res.json();
+        if (json.status === false || json.success === false)
+          throw new Error(json.message || json.error || 'Gagal mengambil track.');
+
+        render(json);
+      } catch (e) {
+        setErr(e.message || 'Koneksi gagal. Periksa URL dan coba lagi.');
+        setArtBg(null);
+      } finally {
+        setLoad(false);
+        $('btn').disabled = false;
+      }
+    }
+
+    $('url').addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
+  </script>
+</body>
+</html>
